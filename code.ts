@@ -132,8 +132,9 @@ function recolorWithShades(selection: readonly SceneNode[]): void {
   const baseHSL = rgbToHsl(baseColorRGB.r, baseColorRGB.g, baseColorRGB.b);
 
   // Создаем палитру оттенков с разной яркостью
-  const minLightness = 0.15; // Минимальная яркость (темный оттенок)
-  const maxLightness = 0.85; // Максимальная яркость (светлый оттенок)
+  // Используем широкий диапазон для создания очень светлых оттенков (как в примере #E0F2F7)
+  const minLightness = 0.10; // Минимальная яркость (темный оттенок)
+  const maxLightness = 0.95; // Максимальная яркость (очень светлый оттенок, как фон в примере)
   const lightnessRange = maxLightness - minLightness;
 
   // Перекрашиваем каждый объект в соответствующий оттенок
@@ -147,8 +148,19 @@ function recolorWithShades(selection: readonly SceneNode[]): void {
     // Инвертируем, чтобы более светлые исходные объекты получали более светлые оттенки
     const lightness = maxLightness - (normalizedIndex * lightnessRange);
     
-    // Создаем оттенок с сохранением hue и saturation базового цвета
-    const shadeRGB = hslToRgb(baseHSL.h, baseHSL.s, lightness);
+    // Для очень светлых оттенков уменьшаем насыщенность (как в примере #E0F2F7)
+    // Это создает более естественные пастельные оттенки
+    let saturation = baseHSL.s;
+    if (lightness > 0.85) {
+      // Для очень светлых оттенков уменьшаем насыщенность до 20-30%
+      saturation = baseHSL.s * (0.2 + (0.85 - lightness) * 0.1);
+    } else if (lightness < 0.25) {
+      // Для очень темных оттенков немного увеличиваем насыщенность для контраста
+      saturation = Math.min(1, baseHSL.s * 1.1);
+    }
+    
+    // Создаем оттенок с сохранением hue и адаптированной saturation
+    const shadeRGB = hslToRgb(baseHSL.h, saturation, lightness);
     const shadeColor = {
       r: Math.max(0, Math.min(1, shadeRGB.r)),
       g: Math.max(0, Math.min(1, shadeRGB.g)),
