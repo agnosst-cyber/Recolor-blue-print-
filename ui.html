@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #FFFFFF;
+      color: #000000;
+      font-size: 11px;
+      line-height: 16px;
+    }
+    
+    .container {
+      padding: 16px;
+    }
+    
+    h2 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      line-height: 18px;
+      color: #000000;
+    }
+    
+    p {
+      margin: 0 0 16px 0;
+      color: #000000;
+      font-size: 11px;
+      line-height: 16px;
+    }
+    
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    
+    button {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-size: 11px;
+      font-weight: 500;
+      line-height: 16px;
+      padding: 6px 12px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.1s ease;
+      width: 100%;
+      text-align: center;
+    }
+    
+    button:focus {
+      outline: 2px solid #18A0FB;
+      outline-offset: 2px;
+    }
+    
+    #recolor {
+      background-color: #2A7DC7;
+      color: #FFFFFF;
+    }
+    
+    #recolor:hover {
+      background-color: #1f5f9a;
+    }
+    
+    #recolor:active {
+      background-color: #164a7a;
+    }
+    
+    #cancel {
+      background-color: #F0F0F0;
+      color: #000000;
+    }
+    
+    #cancel:hover {
+      background-color: #E0E0E0;
+    }
+    
+    #cancel:active {
+      background-color: #D0D0D0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Recolor Plugin</h2>
+    <p>Выделите фрейм, объект или группу и нажмите кнопку для перекрашивания в голубой цвет #2A7DC7</p>
+    <div class="button-group">
+      <button id="recolor">Recolor</button>
+      <button id="cancel">Cancel</button>
+    </div>
+  </div>
+  <script>
+    // Автоматическая подстройка высоты под контент
+    function resizeToContent() {
+      const height = document.body.scrollHeight;
+      parent.postMessage({ pluginMessage: { type: 'resize', height } }, '*');
+    }
+    
+    // Вызываем при загрузке и после изменений
+    window.addEventListener('load', resizeToContent);
+    
+    // Используем ResizeObserver для отслеживания изменений размера
+    if (window.ResizeObserver) {
+      const resizeObserver = new ResizeObserver(resizeToContent);
+      resizeObserver.observe(document.body);
+    }
+    
+    document.getElementById('recolor').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'recolor' } }, '*');
+    }
+
+    document.getElementById('cancel').onclick = () => {
+      parent.postMessage({ pluginMessage: { type: 'cancel' } }, '*');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+# Node
+*.log
+*.log.*
+node_modules
+
+out/
+dist/
+
+# Включаем code.js в репозиторий, так как это рабочий файл для плагина Figma
+# code.js
